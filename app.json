@@ -1,0 +1,9 @@
+{
+  "expo": {
+    "name": "Almox · Controle de estoque",
+    "slug": "almox-estoque",
+    "version": "1.0.0",
+    "userInterfaceStyle": "light",
+    "web": { "bundler": "metro", "lang": "pt-BR" }
+  }
+}

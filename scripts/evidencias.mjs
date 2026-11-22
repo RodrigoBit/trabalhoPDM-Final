@@ -1,0 +1,72 @@
+import { chromium } from 'playwright';
+import assert from 'node:assert/strict';
+import { mkdir, writeFile } from 'node:fs/promises';
+
+const baseURL = process.env.APP_URL || 'http://localhost:8081';
+const dir = new URL('../docs/prints/', import.meta.url);
+await mkdir(dir, { recursive: true });
+const browser = await chromium.launch({ executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH });
+try {
+  const page = await browser.newPage({ viewport: { width: 412, height: 915 }, deviceScaleFactor: 1.5, locale: 'pt-BR' });
+  const errors = [];
+  page.on('pageerror', error => { errors.push(error.message); console.error(error.message); });
+  page.setDefaultTimeout(15000);
+  const button = name => page.getByRole('button', { name, exact: true });
+  const field = label => page.getByLabel(label, { exact: true });
+  const captures = new Map();
+  const snap = async file => {
+    await page.evaluate(() => document.fonts.ready);
+    captures.set(file, await page.screenshot({ animations: 'disabled' }));
+  };
+  const tab = name => page.getByRole('tab', { name: new RegExp(name) }).click();
+  await page.goto(baseURL, { timeout: 120000 });
+  await button('Preencher').waitFor({ timeout: 120000 });
+  await snap('01-login.png');
+
+  await button('Preencher').click();
+  await field('Senha').fill('incorreta');
+  await button('Entrar no sistema').click();
+  await page.getByText('E-mail ou senha incorretos.').waitFor();
+  await button('Preencher').click();
+  await button('Entrar no sistema').click();
+  await field('Nome do produto').fill('Papel kraft');
+  await field('Preço unitário (R$)').fill('18,90');
+  await field('Quantidade inicial').fill('8');
+  await field('Quantidade inicial').blur();
+  await snap('02-cadastro.png');
+  await button('Cadastrar produto').click();
+  await page.getByText(/Papel kraft cadastrado com 8 un/).waitFor();
+  await tab('Estoque');
+  await page.getByText('8 un.', { exact: true }).waitFor();
+  await tab('Saída');
+  await field('Buscar produto').fill('inexistente');
+  await page.getByText('Nenhum produto encontrado.').waitFor();
+  await field('Buscar produto').fill('kraft');
+  await field('Buscar produto').blur();
+  await button('Papel kraft, ALM-005').waitFor();
+  await snap('04-saida-busca.png');
+  await button('Papel kraft, ALM-005').click();
+  await field('Quantidade de saída').fill('9');
+  await button('Registrar saída').click();
+  await page.getByText(/Saldo insuficiente/).waitFor();
+  await field('Quantidade de saída').fill('3');
+  await button('Registrar saída').click();
+  await page.getByText(/Baixa registrada.*Saldo: 5 un/).waitFor();
+  await snap('05-baixa-registrada.png');
+  await tab('Estoque');
+  await page.getByText('5 un.', { exact: true }).waitFor();
+  await snap('03-estoque.png');
+  assert.equal(await page.getByText('Baixo', { exact: true }).count(), 2);
+  await button('Sair').click();
+  await button('Entrar no sistema').waitFor();
+  await page.reload();
+  await button('Preencher').click();
+  await button('Entrar no sistema').click();
+  await tab('Estoque');
+  await page.getByText('5 un.', { exact: true }).waitFor();
+  assert.deepEqual(errors, []);
+  for (const [file, buffer] of captures) await writeFile(new URL(file, dir), buffer);
+  console.log('Login, cadastro, busca, validação de saldo, baixa, logout e persistência verificados. Cinco prints em docs/prints/.');
+} finally {
+  await browser.close();
+}

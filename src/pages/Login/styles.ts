@@ -1,0 +1,27 @@
+import { StyleSheet } from 'react-native';
+import { color, mono } from '../../global/theme';
+export const s = StyleSheet.create({
+  root: { flex: 1, backgroundColor: color.paper },
+  scroll: { flex: 1 }, center: { flexGrow: 1, justifyContent: 'center', paddingHorizontal: 18, paddingVertical: 20 },
+  spacious: { paddingHorizontal: 32, paddingVertical: 38 },
+  card: { alignSelf: 'center', width: '100%', maxWidth: 1080, borderWidth: 1, borderColor: color.line, borderRadius: 20, backgroundColor: color.white, overflow: 'hidden' },
+  split: { flexDirection: 'row' },
+  cover: { overflow: 'hidden', backgroundColor: '#0A3E31', padding: 20, minHeight: 108, justifyContent: 'center' },
+  coverWide: { flex: 1, minWidth: 0, padding: 34, justifyContent: 'space-between', minHeight: 530 },
+  heroText: { zIndex: 1, gap: 7, alignItems: 'flex-start' },
+  line: { backgroundColor: color.orange, height: 4, width: 40, borderRadius: 2, marginBottom: 10 },
+  heroTitle: { fontWeight: '800', fontSize: 24, lineHeight: 26, color: color.paper, letterSpacing: -1 },
+  largeTitle: { fontSize: 52, lineHeight: 53, letterSpacing: -2.7 },
+  art: { alignSelf: 'center', width: '100%', height: 258 },
+  smallArt: { position: 'absolute', width: '45%', height: 112, right: 3, bottom: 0 },
+  caption: { color: '#CCE0D2', fontSize: 14, lineHeight: 21, maxWidth: 355 },
+  body: { padding: 22, gap: 20, justifyContent: 'center' },
+  bodyWide: { flex: 1.04, padding: 40 }, heading: { gap: 6 },
+  kicker: { fontFamily: mono, fontSize: 11, fontWeight: '700', letterSpacing: 1.4, color: color.muted },
+  title: { fontSize: 31, color: color.ink, fontWeight: '800', letterSpacing: -1.5 },
+  form: { gap: 15 }, demo: { borderTopWidth: 1, borderColor: color.line, paddingTop: 17, gap: 6 },
+  demoHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 6 },
+  demoTitle: { color: color.muted, fontSize: 12, fontWeight: '700' },
+  fill: { color: color.green, fontSize: 13, fontWeight: '700', textDecorationLine: 'underline', paddingVertical: 4 },
+  credentials: { color: color.muted, fontFamily: mono, fontSize: 12 },
+});
