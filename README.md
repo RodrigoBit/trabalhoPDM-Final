@@ -53,15 +53,3 @@ Para verificar a tipagem e exportar a versão web para `dist/`, execute os dois 
 pnpm check
 pnpm build
 ```
-
-## Publicar a entrega no GitHub
-
-Em um terminal autenticado com o GitHub CLI, execute os comandos na pasta do projeto para criar o repositório público e obter o link de entrega. Para conectar a conta pela primeira vez, use `gh auth login`.
-
-```bash
-git init -b main
-git add .
-git commit -m "Entrega do aplicativo Almox com evidências"
-gh repo create trabalhoPDM-Final --public --source=. --remote=origin --push
-gh repo view --json url --jq .url
-```
